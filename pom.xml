@@ -9,7 +9,7 @@
 
     <groupId>pl.wavesoftware.netbeans</groupId>
     <artifactId>eid-generator</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
     <name>Exception ID (EID) Generator</name>
