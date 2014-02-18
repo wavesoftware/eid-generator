@@ -1,9 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Wave Software
 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package pl.wavesoftware.netbeans.eid.generator;
 
 import java.awt.Color;
@@ -17,6 +33,7 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import javax.swing.ImageIcon;
 import javax.swing.JToolTip;
 import javax.swing.text.BadLocationException;
@@ -39,88 +56,99 @@ import org.openide.util.ImageUtilities;
  */
 public class EidItem implements CompletionItem {
 
-	private String text;
+    private static final Color FIELDCOLOR = Color.decode("0xB20000");
 
-	private static Color fieldColor = Color.decode("0xB20000");
+    private static final ImageIcon FIELDICON;
 
-	private int caretOffset;
+    private final transient String text;
 
-	public EidItem(int caretOffset) {
-		GregorianCalendar cal = new GregorianCalendar();
-		Date date = cal.getTime();
-		this.text = new SimpleDateFormat("yyyyMMdd:HHmmss").format(date);
-		this.caretOffset = caretOffset;
-	}
+    private final transient int caretOffset;
 
-	@Override
-	public void defaultAction(JTextComponent jtc) {
-		try {
-			StyledDocument doc = (StyledDocument) jtc.getDocument();
-			doc.insertString(caretOffset, text, null);
-			//This statement will close the code completion box:
-			Completion.get().hideAll();
-		} catch (BadLocationException ex) {
-			Exceptions.printStackTrace(ex);
-		}
-	}
+    static {
+        final String path = EidItem.class.getPackage().getName().replace(".", File.separator);
+        final Path full = Paths.get(path, "id.png");
+        final Image image = ImageUtilities.loadImage(full.toString(), false);
+        FIELDICON = new ImageIcon(image);
+    }
 
-	@Override
-	public void processKeyEvent(KeyEvent ke) {
-	}
+    public static String getNewEid() {
+        final GregorianCalendar cal = new GregorianCalendar();
+        final Date date = cal.getTime();
+        return new SimpleDateFormat("yyyyMMdd:HHmmss", Locale.US).format(date);
+    }
 
-	@Override
-	public int getPreferredWidth(Graphics graphics, Font font) {
-		return CompletionUtilities.getPreferredWidth(text, null, graphics, font);
-	}
+    public EidItem(final int caretOffset) {
+        this.text = getNewEid();
+        this.caretOffset = caretOffset;
+    }
 
-	@Override
-	public void render(Graphics g, Font defaultFont, Color defaultColor, Color backgroundColor,
-			int width, int height, boolean selected) {
-		String path = this.getClass().getPackage().getName().replace(".", File.separator);
-		Path full = Paths.get(path, "id.png");
-		Image image = ImageUtilities.loadImage(full.toString(), false);
-		ImageIcon fieldIcon = new ImageIcon(image);
-		CompletionUtilities.renderHtml(fieldIcon, text, "[generated]", g, defaultFont,
-				(selected ? Color.white : fieldColor),
-				width, height, selected);
-	}
+    @Override
+    public void defaultAction(final JTextComponent jtc) {
+        try {
+            final StyledDocument doc = (StyledDocument) jtc.getDocument();
+            doc.insertString(caretOffset, text, null);
+            //This statement will close the code completion box:
+            Completion.get().hideAll();
+        } catch (BadLocationException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
 
-	@Override
-	public CompletionTask createDocumentationTask() {
-		return null;
-	}
+    @Override
+    public void processKeyEvent(final KeyEvent event) {
+        // do nothing here
+    }
 
-	@Override
-	public CompletionTask createToolTipTask() {
-		return new AsyncCompletionTask(new AsyncCompletionQuery() {
-			@Override
-			protected void query(CompletionResultSet completionResultSet, Document document, int i) {
-				JToolTip toolTip = new JToolTip();
-				toolTip.setTipText("Press Enter to insert EID: \"" + text + "\"");
-				completionResultSet.setToolTip(toolTip);
-				completionResultSet.finish();
-			}
-		});
-	}
+    @Override
+    public int getPreferredWidth(final Graphics graphics, final Font font) {
+        return CompletionUtilities.getPreferredWidth(text, null, graphics, font);
+    }
 
-	@Override
-	public boolean instantSubstitution(JTextComponent jtc) {
-		return false;
-	}
+    @Override
+    public void render(final Graphics graphics, final Font defaultFont, final Color defaultColor,
+            final Color backgroundColor, final int width, final int height, final boolean selected) {
 
-	@Override
-	public int getSortPriority() {
-		return 0;
-	}
+        CompletionUtilities.renderHtml(FIELDICON, text, "[generated]", graphics, defaultFont,
+                (selected ? Color.white : FIELDCOLOR),
+                width, height, selected);
+    }
 
-	@Override
-	public CharSequence getSortText() {
-		return text;
-	}
+    @Override
+    public CompletionTask createDocumentationTask() {
+        return null;
+    }
 
-	@Override
-	public CharSequence getInsertPrefix() {
-		return text;
-	}
+    @Override
+    public CompletionTask createToolTipTask() {
+        return new AsyncCompletionTask(new AsyncCompletionQuery() {
+            @Override
+            protected void query(final CompletionResultSet resultSet, final Document document, final int offset) {
+                final JToolTip toolTip = new JToolTip();
+                toolTip.setTipText("Press Enter to insert EID: \"" + text + "\"");
+                resultSet.setToolTip(toolTip);
+                resultSet.finish();
+            }
+        });
+    }
+
+    @Override
+    public boolean instantSubstitution(final JTextComponent jtc) {
+        return false;
+    }
+
+    @Override
+    public int getSortPriority() {
+        return 0;
+    }
+
+    @Override
+    public CharSequence getSortText() {
+        return text;
+    }
+
+    @Override
+    public CharSequence getInsertPrefix() {
+        return text;
+    }
 
 }
