@@ -1,2 +1,8 @@
 /target
 /src/main/resources/rebel.xml
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
