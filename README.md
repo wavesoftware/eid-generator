@@ -1,6 +1,8 @@
 Exception ID (EID) Generator
 ============================
 
+[![Build Status](https://travis-ci.org/wavesoftware/eid-generator.png)](https://travis-ci.org/wavesoftware/eid-generator)
+
 A plugin for Netbeans 7.4
 
 Generates a unique Exception ID to be use in Java source code.
