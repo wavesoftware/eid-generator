@@ -4,11 +4,11 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
 
-    <groupId>pl.wavesoftware.netbeans</groupId>
-    <artifactId>eid-generator</artifactId>
+    <groupId>pl.wavesoftware</groupId>
+    <artifactId>netbeans-eid-generator</artifactId>
     <version>0.1.1-SNAPSHOT</version>
     <packaging>nbm</packaging>
 
@@ -33,11 +33,6 @@
     </scm>
 
     <repositories>
-        <!--
-        Repository hosting NetBeans modules, especially APIs.
-        Versions are based on IDE releases, e.g.: RELEASE691
-        To create your own repository, use: nbm:populate-repository
-        -->
         <repository>
             <id>netbeans</id>
             <name>NetBeans</name>
@@ -90,8 +85,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <licenseName>The MIT License (MIT)</licenseName>
-                    <licenseFile>./LICENSE</licenseFile>
+                    <licenseFile>LICENSE</licenseFile>
                     <author>Wave Software Poland</author>
+                    <keystore>src/release/nbm-keystore.jks</keystore>
+                    <keystorealias>${user.name}</keystorealias>
                 </configuration>
             </plugin>
 
@@ -117,4 +114,48 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+
+        <profile>
+            <id>sonatype-oss-release</id>
+            <build>
+                <defaultGoal>validate</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>catch-keystorepass</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <target>
+                                        <!-- == catch password in a prompt == -->
+                                        <input
+                                            message="Please enter password for signing NBM with user `${user.name}`: "
+                                            addproperty="keystorepass">
+                                            <handler classname="org.apache.tools.ant.input.SecureInputHandler" />
+                                        </input>
+                                    </target>
+                                    <exportAntProperties>true</exportAntProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.ant</groupId>
+                                <artifactId>ant</artifactId>
+                                <version>1.9.3</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
