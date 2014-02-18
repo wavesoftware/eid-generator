@@ -5,12 +5,27 @@ Exception ID (EID) Generator
 
 A plugin for Netbeans 7.4
 
-Generates a unique Exception ID to be use in Java source code.
+Usage
+-----
 
-To use this plugin type `Ctrl+Space` inside empty String literal - it will generate new unique identifier. It can be used to identify your technical exceptions.
+Generates a unique Exception ID, that can be used in Java source code.
 
-Example:
+In order to use this plugin type `Ctrl+Space` inside empty String literal. This will generate new unique identifier as a Code Completion. That generated EID can be used, for example, to identify your exceptions.
+
+Example
+-------
+
+This is technical runtime exception, a posible bug. EID Generator plugin can be used to quickly fill unique bug id.
 
 ```java
-throw new EidRuntimeException("20140218:161429", ex);
+try {
+    shuldWorkIfNoBugsExists();
+} catch (IOException ex) {
+    throw new EidRuntimeException("20140218:161429", "Something wrong with HDD, permissions?", ex);
+}
+```
+
+To invoke EID code completion:
+```java
+throw new EidRuntimeException("<Ctrl+Space>"
 ```

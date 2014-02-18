@@ -14,10 +14,42 @@
 
     <name>Exception ID (EID) Generator</name>
     <description><![CDATA[
-		<p>Generates a unique Exception ID to be use in Java source code.</p>
+		<p>Generates a unique Exception ID, that can be used in Java source code.</p>
 
-		<p>To use this plugin type <code>Ctrl+Space</code> inside empty String literal - it will generate new unique identifier. It can be used to identify your exceptions.</p>
+		<p>In order to use this plugin type <code>Ctrl+Space</code> inside empty String literal. This will generate new unique identifier as a <i>Code Completion</i>. That generated EID can be used, for example, to identify your exceptions.</p>
+
+        <p>
+            Example usage (This is technical runtime exception, a posible bug. This plugin can be used to quickly fill unique bug id.):<br />
+            <code>try {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;shuldWorkIfNoBugsExists();<br />
+} catch (IOException ex) {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;throw new EidRuntimeException("20140218:161429", "Something wrong with HDD, permissions?", ex);<br />
+}</code>
+        </p>
 	]]></description>
+
+    <url>https://github.com/wavesoftware/eid-generator</url>
+
+    <licenses>
+        <license>
+            <name>The MIT License (MIT)</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Wave Software</name>
+        <url>http://wavesoftware.pl</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>ksuszynski</id>
+            <name>Krzysztof Suszyński</name>
+            <email>krzysztof.suszynski@wavesoftware.pl</email>
+        </developer>
+    </developers>
 
     <properties>
         <netbeans.hint.license>mit</netbeans.hint.license>
@@ -86,7 +118,6 @@
                 <configuration>
                     <licenseName>The MIT License (MIT)</licenseName>
                     <licenseFile>LICENSE</licenseFile>
-                    <author>Wave Software Poland</author>
                     <keystore>src/release/nbm-keystore.jks</keystore>
                     <keystorealias>${user.name}</keystorealias>
                 </configuration>
