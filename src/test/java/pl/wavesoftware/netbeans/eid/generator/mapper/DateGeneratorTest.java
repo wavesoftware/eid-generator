@@ -24,7 +24,9 @@
 
 package pl.wavesoftware.netbeans.eid.generator.mapper;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -41,11 +43,15 @@ public class DateGeneratorTest {
 
     @Test
     public void testGenerate() {
-        DateGenerator instance = new DateGenerator("yyyyMMdd:HHmmss");
+        String format = "yyyyMMdd:HHmmss";
+        DateGenerator instance = new DateGenerator(format);
         Calendar mock = Mockito.mock(Calendar.class);
-        when(mock.getTimeInMillis()).thenReturn(1393086452000L);
+        long milis = 1393086452000L;
+        when(mock.getTimeInMillis()).thenReturn(milis);
         instance.cal = mock;
-        String expResult = "20140222:172732";
+        Date date = new Date(milis);
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String expResult = formatter.format(date);
         String result = instance.generate();
         assertEquals(expResult, result);
     }
