@@ -9,7 +9,7 @@
 
     <groupId>pl.wavesoftware</groupId>
     <artifactId>netbeans-eid-generator</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <packaging>nbm</packaging>
 
     <name>Exception ID (EID) Generator</name>
@@ -92,6 +92,21 @@
             <artifactId>org-openide-util</artifactId>
             <version>RELEASE80-BETA</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-lookup</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-options-api</artifactId>
+            <version>RELEASE74</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>RELEASE74</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

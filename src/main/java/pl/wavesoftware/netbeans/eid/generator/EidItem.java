@@ -30,10 +30,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JToolTip;
 import javax.swing.text.BadLocationException;
@@ -49,6 +46,10 @@ import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
 import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
+import org.openide.util.NbPreferences;
+import pl.wavesoftware.netbeans.eid.generator.mapper.GeneratorFactory;
+import pl.wavesoftware.netbeans.eid.generator.mapper.PolicyMapper;
+import pl.wavesoftware.netbeans.eid.generator.model.Policy;
 
 /**
  *
@@ -72,9 +73,10 @@ public class EidItem implements CompletionItem {
     }
 
     public static String getNewEid() {
-        final GregorianCalendar cal = new GregorianCalendar();
-        final Date date = cal.getTime();
-        return new SimpleDateFormat("yyyyMMdd:HHmmss", Locale.US).format(date);
+        final Preferences prefs = NbPreferences.forModule(EidItem.class);
+        final PolicyMapper mapper = new PolicyMapper(prefs);
+        final Policy policy = mapper.load();
+        return GeneratorFactory.create(policy).generate();
     }
 
     public EidItem(final int caretOffset) {

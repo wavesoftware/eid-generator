@@ -5,6 +5,24 @@ Exception ID (EID) Generator
 
 A plugin for Netbeans 7.4
 
+Download
+--------
+
+
+https://oss.sonatype.org/service/local/repositories/releases/content/pl/wavesoftware/netbeans-eid-generator/0.2.0/netbeans-eid-generator-0.2.0.nbm
+
+Maven
+-----
+
+```xml
+<dependency>
+    <groupId>pl.wavesoftware</groupId>
+    <artifactId>netbeans-eid-generator</artifactId>
+    <version>0.2.0</version>
+    <type>nbm</type>
+</dependency>
+```
+
 Usage
 -----
 
