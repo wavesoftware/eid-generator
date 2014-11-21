@@ -65,6 +65,7 @@ public class Policy {
 
         DATE,
         RANDOM_NUMBER,
-        RANDOM_HASH;
+        RANDOM_HASH,
+        RANDOM_UUID;
     }
 }

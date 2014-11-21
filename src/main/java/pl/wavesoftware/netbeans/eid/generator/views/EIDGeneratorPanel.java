@@ -57,6 +57,7 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
         jButton1 = new javax.swing.JButton();
+        randomUUIDRadioButton = new javax.swing.JRadioButton();
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(EIDGeneratorPanel.class, "EIDGeneratorPanel.jLabel1.text")); // NOI18N
 
@@ -92,6 +93,9 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
             }
         });
 
+        buttonGroup1.add(randomUUIDRadioButton);
+        org.openide.awt.Mnemonics.setLocalizedText(randomUUIDRadioButton, org.openide.util.NbBundle.getMessage(EIDGeneratorPanel.class, "EIDGeneratorPanel.randomUUIDRadioButton.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -111,7 +115,8 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addComponent(randomUUIDRadioButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -127,6 +132,8 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
                 .addComponent(randomNumberRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(randomHashRadioButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(randomUUIDRadioButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -156,7 +163,8 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
     protected void updateModel(Policy policy) {
         policyDateRadioButton.setSelected(policy.getType().equals(Policy.Type.DATE));
         randomNumberRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_NUMBER));
-        randomNumberRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_HASH));
+        randomHashRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_HASH));
+         randomUUIDRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_UUID));
         if (policy.getType().equals(Policy.Type.DATE)) {
             String format = policy.getFormat();
             formatComboBox.getModel().setSelectedItem(format);
@@ -172,6 +180,8 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
         } else if (randomNumberRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_NUMBER);
         } else if (randomHashRadioButton.isSelected()) {
+            policy.setType(Policy.Type.RANDOM_HASH);
+        } else if (randomUUIDRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_HASH);
         }
         return policy;
@@ -198,5 +208,6 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton policyDateRadioButton;
     private javax.swing.JRadioButton randomHashRadioButton;
     private javax.swing.JRadioButton randomNumberRadioButton;
+    private javax.swing.JRadioButton randomUUIDRadioButton;
     // End of variables declaration//GEN-END:variables
 }
