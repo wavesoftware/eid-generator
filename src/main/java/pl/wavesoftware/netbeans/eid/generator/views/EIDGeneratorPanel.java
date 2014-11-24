@@ -182,7 +182,7 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
         } else if(randomHashRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_HASH);
         } else if(randomUUIDRadioButton.isSelected()) {
-            policy.setType(Policy.Type.RANDOM_HASH);
+            policy.setType(Policy.Type.RANDOM_UUID);
         }
         return policy;
     }
