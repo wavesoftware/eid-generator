@@ -164,7 +164,7 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
         policyDateRadioButton.setSelected(policy.getType().equals(Policy.Type.DATE));
         randomNumberRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_NUMBER));
         randomHashRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_HASH));
-         randomUUIDRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_UUID));
+        randomUUIDRadioButton.setSelected(policy.getType().equals(Policy.Type.RANDOM_UUID));
         if (policy.getType().equals(Policy.Type.DATE)) {
             String format = policy.getFormat();
             formatComboBox.getModel().setSelectedItem(format);
@@ -177,11 +177,11 @@ final class EIDGeneratorPanel extends javax.swing.JPanel {
             policy.setType(Policy.Type.DATE);
             String format = formatComboBox.getSelectedItem().toString();
             policy.setFormat(format);
-        } else if (randomNumberRadioButton.isSelected()) {
+        } else if(randomNumberRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_NUMBER);
-        } else if (randomHashRadioButton.isSelected()) {
+        } else if(randomHashRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_HASH);
-        } else if (randomUUIDRadioButton.isSelected()) {
+        } else if(randomUUIDRadioButton.isSelected()) {
             policy.setType(Policy.Type.RANDOM_HASH);
         }
         return policy;

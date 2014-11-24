@@ -29,11 +29,10 @@ import pl.wavesoftware.netbeans.eid.generator.model.EidGenerator;
 
 /**
  *
- * @author Krzysztof Suszyński <krzysztof.suszynski@wavesoftware.pl>
+ * @author Nicolas Marcotte <nicolas.marcotte@usherbrooke.ca>
  */
 public class UUIDGenerator implements EidGenerator {
-
-
+    
     @Override
     public String generate() {
         return UUID.randomUUID().toString();
