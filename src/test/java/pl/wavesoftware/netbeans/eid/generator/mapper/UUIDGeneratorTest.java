@@ -21,36 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package pl.wavesoftware.netbeans.eid.generator.mapper;
 
-import pl.wavesoftware.netbeans.eid.generator.model.EidGenerator;
-import pl.wavesoftware.netbeans.eid.generator.model.Policy;
+import org.junit.Assert;
+import org.junit.Test;
+import pl.wavesoftware.util.RegexMatcher;
 
 /**
  *
- * @author Krzysztof Suszyński <krzysztof.suszynski@wavesoftware.pl>
+ * @author Nicolas Marcotte <nicolas.marcotte@usherbrooke.ca>
  */
-public final class GeneratorFactory {
+public class UUIDGeneratorTest {
 
-    /**
-     * Factorizes a eid generator
-     *
-     * @param policy a policy
-     * @return a generator
-     */
-    public EidGenerator create(Policy policy) {
-        switch (policy.getType()) {
-            case DATE:
-                return new DateGenerator(policy.getFormat());
-            case RANDOM_NUMBER:
-                return new RandomNumberGenerator();
-            case RANDOM_HASH:
-                return new RandomHashGenerator();
-            case RANDOM_UUID:
-                return new UUIDGenerator();
-            default:
-                throw new UnsupportedOperationException("Unreachable code!");
-        }
+    private final static RegexMatcher IS_A_UUID = RegexMatcher.matches("^\\p{XDigit}{8}-(\\p{XDigit}{4}-){3}\\p{XDigit}{12}$");
+
+    @Test
+    public void testGenerate() {
+        UUIDGenerator instance = new UUIDGenerator();
+        
+        String firstUUID = instance.generate();
+        String secondUUID = instance.generate();
+        Assert.assertThat(firstUUID, IS_A_UUID);
+        Assert.assertThat(secondUUID, IS_A_UUID);
+        Assert.assertTrue("unique results", !firstUUID.equals(secondUUID));
     }
+
 }

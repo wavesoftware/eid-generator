@@ -24,33 +24,18 @@
 
 package pl.wavesoftware.netbeans.eid.generator.mapper;
 
+import java.util.UUID;
 import pl.wavesoftware.netbeans.eid.generator.model.EidGenerator;
-import pl.wavesoftware.netbeans.eid.generator.model.Policy;
 
 /**
  *
- * @author Krzysztof Suszyński <krzysztof.suszynski@wavesoftware.pl>
+ * @author Nicolas Marcotte <nicolas.marcotte@usherbrooke.ca>
  */
-public final class GeneratorFactory {
-
-    /**
-     * Factorizes a eid generator
-     *
-     * @param policy a policy
-     * @return a generator
-     */
-    public EidGenerator create(Policy policy) {
-        switch (policy.getType()) {
-            case DATE:
-                return new DateGenerator(policy.getFormat());
-            case RANDOM_NUMBER:
-                return new RandomNumberGenerator();
-            case RANDOM_HASH:
-                return new RandomHashGenerator();
-            case RANDOM_UUID:
-                return new UUIDGenerator();
-            default:
-                throw new UnsupportedOperationException("Unreachable code!");
-        }
+public class UUIDGenerator implements EidGenerator {
+    
+    @Override
+    public String generate() {
+        return UUID.randomUUID().toString();
     }
+
 }
