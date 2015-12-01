@@ -33,16 +33,13 @@ import pl.wavesoftware.netbeans.eid.generator.model.Policy;
  */
 public final class GeneratorFactory {
 
-    private GeneratorFactory() {
-    }
-
     /**
      * Factorizes a eid generator
      *
      * @param policy a policy
      * @return a generator
      */
-    public static EidGenerator create(Policy policy) {
+    public EidGenerator create(Policy policy) {
         switch (policy.getType()) {
             case DATE:
                 return new DateGenerator(policy.getFormat());
@@ -51,7 +48,7 @@ public final class GeneratorFactory {
             case RANDOM_HASH:
                 return new RandomHashGenerator();
             default:
-                throw new IllegalArgumentException("Unreachable code!");
+                throw new UnsupportedOperationException("Unreachable code!");
         }
     }
 }

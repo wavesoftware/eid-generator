@@ -26,7 +26,11 @@ package pl.wavesoftware.netbeans.eid.generator.mapper;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import pl.wavesoftware.netbeans.eid.generator.model.EidGenerator;
 import pl.wavesoftware.netbeans.eid.generator.model.Policy;
 
@@ -35,15 +39,31 @@ import pl.wavesoftware.netbeans.eid.generator.model.Policy;
  * @author Krzysztof Suszyński <krzysztof.suszynski@wavesoftware.pl>
  */
 public class GeneratorFactoryTest {
-
-    public GeneratorFactoryTest() {
-    }
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testCreate() {
+        GeneratorFactory generatorFactory = new GeneratorFactory();
         Policy policy = new Policy(Policy.Type.DATE, "yyMMddHHmmss");
-        EidGenerator result = GeneratorFactory.create(policy);
+        EidGenerator result = generatorFactory.create(policy);
         assertThat(result, instanceOf(DateGenerator.class));
     }
-
+    
+    @Test
+    public void testCreate_RandomNumber() {
+        GeneratorFactory generatorFactory = new GeneratorFactory();
+        Policy policy = new Policy(Policy.Type.RANDOM_NUMBER, "12");
+        EidGenerator result = generatorFactory.create(policy);
+        assertThat(result, instanceOf(RandomNumberGenerator.class));
+    }
+    
+    @Test
+    public void testCreate_RandomHash() {
+        GeneratorFactory generatorFactory = new GeneratorFactory();
+        Policy policy = new Policy(Policy.Type.RANDOM_HASH, "12");
+        EidGenerator result = generatorFactory.create(policy);
+        assertThat(result, instanceOf(RandomHashGenerator.class));
+    }
 }

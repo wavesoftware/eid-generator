@@ -3,13 +3,12 @@ Exception ID (EID) Generator
 
 [![Build Status](https://travis-ci.org/wavesoftware/eid-generator.png)](https://travis-ci.org/wavesoftware/eid-generator)
 
-A plugin for Netbeans 7.4
+A plugin for Netbeans 8.1
 
 Download
 --------
 
-
-https://oss.sonatype.org/service/local/repositories/releases/content/pl/wavesoftware/netbeans-eid-generator/0.2.0/netbeans-eid-generator-0.2.0.nbm
+http://plugins.netbeans.org/plugin/53137/exception-id-eid-generator
 
 Maven
 -----
@@ -18,7 +17,7 @@ Maven
 <dependency>
     <groupId>pl.wavesoftware</groupId>
     <artifactId>netbeans-eid-generator</artifactId>
-    <version>0.2.0</version>
+    <version>0.4.0</version>
     <type>nbm</type>
 </dependency>
 ```

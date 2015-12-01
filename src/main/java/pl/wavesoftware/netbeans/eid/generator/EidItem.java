@@ -27,9 +27,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JToolTip;
@@ -44,9 +41,11 @@ import org.netbeans.spi.editor.completion.CompletionTask;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionQuery;
 import org.netbeans.spi.editor.completion.support.AsyncCompletionTask;
 import org.netbeans.spi.editor.completion.support.CompletionUtilities;
-import org.openide.util.Exceptions;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbPreferences;
+import pl.wavesoftware.eid.utils.EidPreconditions;
+import pl.wavesoftware.eid.utils.EidPreconditions.UnsafeProcedure;
+import static pl.wavesoftware.eid.utils.EidPreconditions.tryToExecute;
 import pl.wavesoftware.netbeans.eid.generator.mapper.GeneratorFactory;
 import pl.wavesoftware.netbeans.eid.generator.mapper.PolicyMapper;
 import pl.wavesoftware.netbeans.eid.generator.model.Policy;
@@ -58,25 +57,26 @@ import pl.wavesoftware.netbeans.eid.generator.model.Policy;
 public class EidItem implements CompletionItem {
 
     private static final Color FIELDCOLOR = Color.decode("0xB20000");
-
+    private static final GeneratorFactory GENERATOR_FACTORY = new GeneratorFactory();
     private static final ImageIcon FIELDICON;
-
+    private static final CharSequence UNIX_SEPERATOR = "/";
     private final transient String text;
 
     private final transient int caretOffset;
 
     static {
-        final String path = EidItem.class.getPackage().getName().replace(".", File.separator);
-        final Path full = Paths.get(path, "id.png");
-        final Image image = ImageUtilities.loadImage(full.toString(), false);
-        FIELDICON = new ImageIcon(image);
+        final String path = EidItem.class.getPackage().getName().replace(".", UNIX_SEPERATOR);
+        final String full = String.format("%s/%s", path, "id.png");
+        final Image image = ImageUtilities.loadImage(full, false);
+        Image checked = EidPreconditions.checkNotNull(image, "20151130:231411");
+        FIELDICON = new ImageIcon(checked);
     }
 
     public static String getNewEid() {
         final Preferences prefs = NbPreferences.forModule(EidItem.class);
         final PolicyMapper mapper = new PolicyMapper(prefs);
         final Policy policy = mapper.load();
-        return GeneratorFactory.create(policy).generate();
+        return GENERATOR_FACTORY.create(policy).generate();
     }
 
     public EidItem(final int caretOffset) {
@@ -86,14 +86,16 @@ public class EidItem implements CompletionItem {
 
     @Override
     public void defaultAction(final JTextComponent jtc) {
-        try {
-            final StyledDocument doc = (StyledDocument) jtc.getDocument();
-            doc.insertString(caretOffset, text, null);
-            //This statement will close the code completion box:
-            Completion.get().hideAll();
-        } catch (BadLocationException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+        tryToExecute(new UnsafeProcedure() {
+            @Override
+            public void execute() throws BadLocationException {
+                final StyledDocument doc = (StyledDocument) jtc.getDocument();
+                doc.insertString(caretOffset, text, null);
+                //This statement will close the code completion box:
+                Completion.get().hideAll();
+            }
+            
+        }, "20151130:232546");
     }
 
     @Override
@@ -122,15 +124,7 @@ public class EidItem implements CompletionItem {
 
     @Override
     public CompletionTask createToolTipTask() {
-        return new AsyncCompletionTask(new AsyncCompletionQuery() {
-            @Override
-            protected void query(final CompletionResultSet resultSet, final Document document, final int offset) {
-                final JToolTip toolTip = new JToolTip();
-                toolTip.setTipText("Press Enter to insert EID: \"" + text + "\"");
-                resultSet.setToolTip(toolTip);
-                resultSet.finish();
-            }
-        });
+        return new AsyncCompletionTask(new EidAsyncCompletionQuery());
     }
 
     @Override
@@ -151,6 +145,18 @@ public class EidItem implements CompletionItem {
     @Override
     public CharSequence getInsertPrefix() {
         return text;
+    }
+    
+    protected class EidAsyncCompletionQuery extends AsyncCompletionQuery {
+
+        @Override
+        protected void query(final CompletionResultSet resultSet, final Document document, final int offset) {
+            final JToolTip toolTip = new JToolTip();
+            toolTip.setTipText("Press Enter to insert EID: \"" + text + "\"");
+            resultSet.setToolTip(toolTip);
+            resultSet.finish();
+        }
+        
     }
 
 }

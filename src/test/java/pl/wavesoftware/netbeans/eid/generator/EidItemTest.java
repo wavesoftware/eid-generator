@@ -30,7 +30,9 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import javax.swing.JToolTip;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
@@ -38,11 +40,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.netbeans.modules.editor.completion.CompletionImpl;
+import org.netbeans.modules.editor.completion.CompletionResultSetImpl;
+import org.netbeans.spi.editor.completion.CompletionResultSet;
 import org.netbeans.spi.editor.completion.CompletionTask;
 import static pl.wavesoftware.util.RegexMatcher.matches;
 
@@ -185,4 +194,33 @@ public class EidItemTest {
         assertThat(result, matches("^[0-9]{8}:[0-9]{6}$"));
     }
 
+    @Test
+    @Ignore(value = "Not yet fully implemented")
+    @SuppressWarnings("unchecked")
+    public void testEidAsyncCompletionQuery() throws Exception {
+        EidItem.EidAsyncCompletionQuery query = instance.new EidAsyncCompletionQuery();
+        assertNotNull(query);
+        
+        Constructor<CompletionResultSet> constr = CompletionResultSet.class
+                .getDeclaredConstructor(CompletionResultSetImpl.class);
+        Constructor<CompletionResultSetImpl> constr1 = (Constructor<CompletionResultSetImpl>)
+                CompletionResultSetImpl.class.getDeclaredConstructors()[0];
+        try {
+            assertNotNull(constr);
+            constr.setAccessible(true);
+            constr1.setAccessible(true);
+            CompletionImpl compl = CompletionImpl.get();
+            CompletionTask task = mock(CompletionTask.class);
+            CompletionResultSetImpl crsi = constr1.newInstance(compl, "1", task, 0);
+            assertNotNull(crsi);
+            CompletionResultSet resultSet = constr.newInstance(crsi);
+            
+            query.query(resultSet, null, 0);
+            verify(resultSet, times(1)).setToolTip(any(JToolTip.class));
+            verify(resultSet, times(1)).finish();
+        } finally {
+            constr.setAccessible(false);
+            constr1.setAccessible(false);
+        }
+    }
 }

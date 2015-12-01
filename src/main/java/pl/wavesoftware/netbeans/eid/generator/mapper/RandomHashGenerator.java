@@ -26,6 +26,8 @@ package pl.wavesoftware.netbeans.eid.generator.mapper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import pl.wavesoftware.eid.utils.EidPreconditions.UnsafeSupplier;
+import static pl.wavesoftware.eid.utils.EidPreconditions.tryToExecute;
 
 /**
  *
@@ -33,19 +35,16 @@ import java.security.NoSuchAlgorithmException;
  */
 public class RandomHashGenerator extends RandomNumberGenerator {
 
-    private MessageDigest hasher;
-
-    protected void setMessageDigest(final MessageDigest messageDigest) {
-        hasher = messageDigest;
-    }
+    public static final String MD5_ALGORITHM = "MD5";
+    private final MessageDigest hasher;
 
     public RandomHashGenerator() {
-        super();
-        try {
-            hasher = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException ex) {
-            throw new IllegalStateException(ex);
-        }
+        hasher = tryToExecute(new UnsafeSupplier<MessageDigest>() {
+            @Override
+            public MessageDigest get() throws NoSuchAlgorithmException {
+                return MessageDigest.getInstance(MD5_ALGORITHM);
+            }
+        }, "20151201:000112");
     }
 
     @Override
